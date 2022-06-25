@@ -1,17 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
-type Person struct {
-	name string
-}
-
-func (p Person) greet() string {
-	return "Selam " + p.name + " :)"
-}
 func main() {
-	var greeter Person = Person{"BELİZ"}
-	greeting :=
-		greeter.greet()
-	fmt.Printf("%s\n", greeting)
+	http.HandleFunc("/", GreetingServer)
+	http.ListenAndServe(":8080", nil)
+}
+func GreetingServer(w http.ResponseWriter,
+	r *http.Request) {
+	fmt.Fprintf(w, "Hello, %s!",
+		r.URL.Path[1:])
 }
