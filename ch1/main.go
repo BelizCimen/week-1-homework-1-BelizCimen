@@ -1,17 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
 
-type Person struct {
-	name string
-}
+	"github.com/gorilla/mux"
+)
 
-func (p Person) greet() string {
-	return "Selam " + p.name + " :)"
-}
 func main() {
-	var greeter Person = Person{"BELİZ"}
-	greeting :=
-		greeter.greet()
-	fmt.Printf("%s\n", greeting)
+	r := mux.NewRouter()
+	r.HandleFunc("/greet/{name}", greet).Methods(http.MethodGet)
+	http.ListenAndServe(":8080", r)
+}
+func greet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	vars := mux.Vars(r)
+	var name = vars["name"]
+	w.Write([]byte("Hello " + name + "!"))
 }
